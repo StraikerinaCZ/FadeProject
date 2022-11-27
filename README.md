@@ -4,3 +4,4 @@
 </p>
 
 ## Discover a new Minecraft!
+Haven't you discovered anything interesting on the scene for a long time? Try our project. We try to do things differently. The main point is not to be generic.
