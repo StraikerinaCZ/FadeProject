@@ -3,7 +3,6 @@ package sk.m3ii0.fadeproject.code.shared.mysql;
 import java.sql.*;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
 
@@ -43,37 +42,6 @@ public class MySQL {
 
     }
 
-    public static void querryExecute(String SQL) {
-        new Thread(() -> {
-            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
-                statement.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public static CompletableFuture<ResultSet> querryResult(String SQL) {
-        return CompletableFuture.supplyAsync(
-                () -> {
-
-                    try (PreparedStatement statement = connection.prepareStatement(SQL)) {
-
-                        ResultSet set = statement.executeQuery();
-
-                        if (set != null) {
-                            return set;
-                        }
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    return null;
-                }
-        );
-    }
-
     public static void closeConnection() {
 
         if (task != null) {
@@ -86,6 +54,44 @@ public class MySQL {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+    }
+
+    public static class Tables {
+
+        public enum Users { // || UUID | KEY ||
+
+            UUID("uuid"),
+            KEY("key");
+
+            Users(String a) {
+                this.a = a;
+            }
+
+            private final String a;
+
+            public String a() {
+                return a;
+            }
+
+        }
+
+        public enum Data {
+
+            KEY("key"),
+            DATA("data");
+
+            Data(String a) {
+                this.a = a;
+            }
+
+            private final String a;
+
+            public String a() {
+                return a;
+            }
+
         }
 
     }
