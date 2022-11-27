@@ -1,0 +1,5 @@
+name: Fade
+version: 0.1
+main: sk.m3ii0.fadeproject.code.bukkit.CodeBukkit
+api-version: 1.19
+author: M3II0
