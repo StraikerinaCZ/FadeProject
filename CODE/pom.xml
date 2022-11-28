@@ -24,31 +24,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>sk.m3ii0.fadeproject.code.bukkit</groupId>
-            <artifactId>BUKKIT</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sk.m3ii0.fadeproject.code.bungee</groupId>
-            <artifactId>BUNGEE</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>sk.m3ii0.fadeproject.code.shared</groupId>
-            <artifactId>SHARED</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

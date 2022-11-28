@@ -9,9 +9,9 @@ public class MySQL {
     private static Timer task;
     private static Connection connection;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/database";
-    private static final String USERNAME = "name";
-    private static final String PASSWORD = "password";
+    private static final String URL = "jdbc:mysql://localhost:3306/fade";
+    private static final String USERNAME = "fade";
+    private static final String PASSWORD = "fade";
 
     public static void prepareConnection() {
 
@@ -42,6 +42,39 @@ public class MySQL {
 
     }
 
+    public static void prepareTables() {
+
+        try (
+
+                PreparedStatement users = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `users` (" +
+                        "`id` INT NOT NULL AUTO_INCREMENT," +
+                        "`uuid` TEXT NOT NULL," +
+                        "`fuid` TEXT NOT NULL," +
+                        "PRIMARY KEY (`id`)" +
+                        ");");
+
+                PreparedStatement data = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `data` (" +
+                        "`id` INT NOT NULL AUTO_INCREMENT," +
+                        "`fuid` TEXT NOT NULL," +
+                        "`data` TEXT NOT NULL," +
+                        "PRIMARY KEY (`id`)" +
+                        ");")
+
+        ) {
+
+            users.execute();
+            data.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static Connection getConnection() {
+        return connection;
+    }
+
     public static void closeConnection() {
 
         if (task != null) {
@@ -60,7 +93,7 @@ public class MySQL {
 
     public static class Tables {
 
-        public enum Users { // || UUID | KEY ||
+        public enum Users {
 
             UUID("uuid"),
             KEY("key");
