@@ -1,9 +1,71 @@
 package sk.m3ii0.fadeproject.code.shared.permissions;
 
+import sk.m3ii0.fadeproject.code.shared.fuid.FUID;
+import sk.m3ii0.fadeproject.code.shared.mysql.MySQL;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Group {
+
+    private static final Map<String, Group> cache = new HashMap<>();
+
+    public static Group getByName(String group) {
+        return cache.get(group);
+    }
+
+    public static Group getByPlayer(FUID fuid) {
+
+        Group result = null;
+
+        try (
+                PreparedStatement statement = MySQL.getConnection().prepareStatement("SELECT * FROM groups WHERE fuid='" + fuid + "'");
+                ResultSet set = statement.executeQuery()
+        ) {
+
+            while (set.next()) {
+                result = getByName(set.getString("group"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static void refreshGroups() {
+
+        cache.clear();
+
+        try (
+                PreparedStatement statement = MySQL.getConnection().prepareStatement("SELECT * FROM groupregister");
+                ResultSet set = statement.executeQuery()
+        ) {
+
+            while (set.next()) {
+                int weight = set.getInt("weight");
+                String rawname = set.getString("rawname");
+                String name = set.getString("name");
+                String prefix = set.getString("prefix");
+                String suffix = set.getString("suffix");
+                String permissions = set.getString("permissions");
+                cache.put(rawname, new Group(weight, rawname, name, prefix, suffix, permissions));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*
+    *
+    *
+    */
 
     private final Map<String, Boolean> permissions;
 

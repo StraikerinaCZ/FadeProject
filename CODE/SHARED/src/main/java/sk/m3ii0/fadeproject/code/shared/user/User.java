@@ -2,6 +2,7 @@ package sk.m3ii0.fadeproject.code.shared.user;
 
 import sk.m3ii0.fadeproject.code.shared.fuid.FUID;
 import sk.m3ii0.fadeproject.code.shared.mysql.MySQL;
+import sk.m3ii0.fadeproject.code.shared.permissions.Group;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -99,6 +100,8 @@ public class User {
     private final FUID fuid;
     private final Map<String, String> customData;
 
+    private Group group;
+
     private User(UUID uuid, FUID fuid, Map<String, String> data) {
 
         this.fuid = fuid;
@@ -110,6 +113,10 @@ public class User {
 
     public FUID getFuid() {
         return fuid;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public void setData(String key, String value) {

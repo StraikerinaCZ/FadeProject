@@ -58,12 +58,39 @@ public class MySQL {
                         "`fuid` TEXT NOT NULL," +
                         "`data` TEXT NOT NULL," +
                         "PRIMARY KEY (`id`)" +
-                        ");")
+                        ");");
+
+                PreparedStatement perms = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `permissions` (" +
+                        "`id` INT NOT NULL AUTO_INCREMENT," +
+                        "`fuid` TEXT," +
+                        "`permissions` TEXT," +
+                        "PRIMARY KEY (`id`)" +
+                        ");");
+
+                PreparedStatement groups = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `groups` (" +
+                        "`id` INT NOT NULL AUTO_INCREMENT," +
+                        "`fuid` TEXT," +
+                        "`group` TEXT," +
+                        "PRIMARY KEY (`id`)" +
+                        ");");
+
+                PreparedStatement groupRegister = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `groupregister` (" +
+                        "`weight` INT DEFAULT '0'," +
+                        "`rawname` TEXT DEFAULT 'New group'," +
+                        "`name` TEXT DEFAULT 'None'," +
+                        "`prefix` TEXT DEFAULT '&7'," +
+                        "`suffix` TEXT DEFAULT '&7'," +
+                        "`permissions` TEXT DEFAULT '{}'," +
+                        "PRIMARY KEY (`weight`)" +
+                        ");");
 
         ) {
 
             users.execute();
             data.execute();
+            perms.execute();
+            groups.execute();
+            groupRegister.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -116,6 +143,61 @@ public class MySQL {
             DATA("data");
 
             Data(String a) {
+                this.a = a;
+            }
+
+            private final String a;
+
+            public String a() {
+                return a;
+            }
+
+        }
+
+        public enum Permissions {
+
+            FUID("fuid"),
+            PERMISSIONS("permissions");
+
+            Permissions(String a) {
+                this.a = a;
+            }
+
+            private final String a;
+
+            public String a() {
+                return a;
+            }
+
+        }
+
+        public enum Groups {
+
+            FUID("fuid"),
+            GROUP("group");
+
+            Groups(String a) {
+                this.a = a;
+            }
+
+            private final String a;
+
+            public String a() {
+                return a;
+            }
+
+        }
+
+        public enum GroupRegister {
+
+            WEIGHT("weight"),
+            RAW_NAME("rawname"),
+            NAME("name"),
+            PREFIX("prefix"),
+            SUFFIX("suffix"),
+            PERMISSIONS("permissions");
+
+            GroupRegister(String a) {
                 this.a = a;
             }
 

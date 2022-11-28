@@ -1,26 +1,47 @@
 package sk.m3ii0.fadeproject.code.bukkit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import sk.m3ii0.fadeproject.code.bukkit.listeners.JoinListener;
+import sk.m3ii0.fadeproject.code.shared.colors.Hex;
 import sk.m3ii0.fadeproject.code.shared.mysql.MySQL;
-import sk.m3ii0.fadeproject.code.shared.user.User;
+import sk.m3ii0.fadeproject.code.shared.permissions.Group;
 
-import java.util.UUID;
-
-public class CodeBukkit extends JavaPlugin implements Listener {
+public class CodeBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
 
-        Bukkit.getPluginManager().registerEvents(this, this);
-
         // Load MySQL
         MySQL.prepareConnection();
-        Bukkit.getScheduler().runTaskLater(this, MySQL::prepareTables, 40);
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+
+            // Prepare tables
+            MySQL.prepareTables();
+            Bukkit.getConsoleSender().sendMessage(
+                    Hex.colorize(
+                            Hex.PREFIX + "Tables has been prepared!"
+                    )
+            );
+
+            // Fetch groups
+            Group.refreshGroups();
+            Bukkit.getConsoleSender().sendMessage(
+                    Hex.colorize(
+                            Hex.PREFIX + "Groups has been synchronized!"
+                    )
+            );
+
+            // Load listeners
+            Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+            Bukkit.getConsoleSender().sendMessage(
+                    Hex.colorize(
+                            Hex.PREFIX + "Listeners has been registered!"
+                    )
+            );
+
+        }, 40);
 
     }
 
@@ -30,17 +51,6 @@ public class CodeBukkit extends JavaPlugin implements Listener {
         // Close MySQL
         MySQL.closeConnection();
 
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-        User.parseLogin(e.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        UUID uuid = e.getPlayer().getUniqueId();
-        User.parseQuit(uuid, User.getUser(uuid));
     }
 
 }
