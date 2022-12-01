@@ -1,5 +1,7 @@
 package sk.m3ii0.fadeproject.code.shared.mysql;
 
+import sk.m3ii0.fadeproject.code.shared.user.User;
+
 import java.sql.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -82,7 +84,7 @@ public class MySQL {
                         "`suffix` TEXT DEFAULT '&7'," +
                         "`permissions` TEXT DEFAULT '{}'," +
                         "PRIMARY KEY (`weight`)" +
-                        ");");
+                        ");")
 
         ) {
 

@@ -93,6 +93,17 @@ public class Group {
         for (String rawData : rawPermissions.split(",")) {
             String dataKey = rawData.split("->")[0];
             boolean dataValue = Boolean.parseBoolean(rawData.split("->")[1]);
+            if (dataKey.contains("group.")) {
+                String group = dataKey.split("group.")[0];
+                Group var = Group.getByName(group);
+                for (String perm : var.getPermissions().keySet()) {
+                    if (dataValue) {
+                        permissions.put(perm, var.getPermissions().get(perm));
+                    } else {
+                        permissions.put(perm, false);
+                    }
+                }
+            }
             permissions.put(dataKey, dataValue);
         }
 

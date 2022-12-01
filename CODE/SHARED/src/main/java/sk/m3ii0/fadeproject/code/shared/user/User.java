@@ -22,7 +22,8 @@ public class User {
         try (
                 PreparedStatement createUser = MySQL.getConnection().prepareStatement("INSERT INTO users VALUES ('0', '" + uuid + "', '" + backup + "');");
                 PreparedStatement result = MySQL.getConnection().prepareStatement("SELECT * FROM users WHERE uuid='" + uuid + "';");
-                ResultSet set = result.executeQuery()) {
+                ResultSet set = result.executeQuery()
+        ) {
 
             String key;
 
@@ -36,7 +37,8 @@ public class User {
             try (
                     PreparedStatement createRow = MySQL.getConnection().prepareStatement("INSERT INTO data (id, fuid, data) VALUES ('0', '" + key + "', '{}');");
                     PreparedStatement dataCommand = MySQL.getConnection().prepareStatement("SELECT * FROM data WHERE fuid='" + key + "';");
-                    ResultSet data = dataCommand.executeQuery()) {
+                    ResultSet data = dataCommand.executeQuery()
+            ) {
 
                 if (data.next()) {
 
@@ -113,6 +115,17 @@ public class User {
 
     public FUID getFuid() {
         return fuid;
+    }
+
+    public boolean hasPermission(String value) {
+        if (group.getPermissions().containsKey(value)) {
+            return group.getPermissions().get(value);
+        }
+        return false;
+    }
+
+    public Group getGroup() {
+        return group;
     }
 
     public void setGroup(Group group) {

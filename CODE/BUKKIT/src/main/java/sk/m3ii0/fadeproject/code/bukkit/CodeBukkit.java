@@ -1,6 +1,7 @@
 package sk.m3ii0.fadeproject.code.bukkit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.m3ii0.fadeproject.code.bukkit.listeners.JoinListener;
 import sk.m3ii0.fadeproject.code.shared.colors.Hex;
@@ -9,8 +10,13 @@ import sk.m3ii0.fadeproject.code.shared.permissions.Group;
 
 public class CodeBukkit extends JavaPlugin {
 
+    private static Plugin instance;
+
     @Override
     public void onEnable() {
+
+        // Instance
+        instance = this;
 
         // Load MySQL
         MySQL.prepareConnection();
@@ -51,6 +57,10 @@ public class CodeBukkit extends JavaPlugin {
         // Close MySQL
         MySQL.closeConnection();
 
+    }
+
+    public static Plugin getInstance() {
+        return instance;
     }
 
 }

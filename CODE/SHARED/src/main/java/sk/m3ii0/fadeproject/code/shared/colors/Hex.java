@@ -10,58 +10,28 @@ public class Hex {
 
     public static final String PREFIX = "&#faff69| <#faff69>Fade</#f55a22> &#f55a22-> &7";
 
-    private final static Pattern RGB;
-    private final static Pattern GRADIENT_1;
-    private final static Pattern GRADIENT_2;
-
-    static {
-
-        RGB = Pattern.compile("&#......");
-        GRADIENT_1 = Pattern.compile("<#......>");
-        GRADIENT_2 = Pattern.compile("</#......>");
-
-    }
-
     public static String highlight(String text) {
         return "§r<#beff63>" + text + "</#dded2f>§r";
     }
 
+    private static final Pattern gradient = Pattern.compile("<(#[A-Za-z0-9]{6})>(.*?)</(#[A-Za-z0-9]{6})>");
+    private static final Pattern rgb = Pattern.compile("&#......");
+
     public static String colorize(String text) {
 
-        Matcher rgbs = RGB.matcher(text);
-        Matcher g1s = GRADIENT_1.matcher(text);
-        Matcher g2s = GRADIENT_2.matcher(text);
+        Matcher g = gradient.matcher(text);
+        Matcher r = rgb.matcher(text);
 
-        while (g1s.find() && g2s.find()) {
-
-            String hex1 = g1s.group(0);
-            String hex2 = g2s.group(0);
-
-            Color from = Color.decode(hex1.replace("<", "").replace(">", ""));
-            Color to = Color.decode(hex2.replace("</", "").replace(">", ""));
-
-            String between = "";
-
-            String[] split = text.split(hex1);
-
-            for (String var : split) {
-                if (var.contains(hex2)) {
-                    between = var.split(hex2)[0];
-                }
-            }
-
-            text = text.replaceFirst(hex1 + between + hex2, rgbGradient(between, from, to));
-
+        while (g.find()) {
+            Color start = Color.decode(g.group(0));
+            String between = g.group(1);
+            Color end = Color.decode(g.group(2));
+            text = g.replaceAll(rgbGradient(between, start, end));
         }
 
-        while (rgbs.find()) {
-
-            String rawText = rgbs.group(0);
-            String rgbColor = rawText.replace("&", "");
-            Color finalColor = Color.decode(rgbColor);
-
-            text = text.replaceFirst(rawText, ChatColor.of(finalColor) + "");
-
+        while (r.find()) {
+            ChatColor color = ChatColor.of(Color.decode(r.group(0)));
+            text = text.replaceFirst(r.group(0), color + "");
         }
 
         return ChatColor.translateAlternateColorCodes('&', text);
