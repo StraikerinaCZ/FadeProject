@@ -15,7 +15,7 @@ public class Hex {
     }
 
     private static final Pattern gradient = Pattern.compile("<(#[A-Za-z0-9]{6})>(.*?)</(#[A-Za-z0-9]{6})>");
-    private static final Pattern rgb = Pattern.compile("&(#......)");
+    private static final Pattern rgb = Pattern.compile("&(#[A-Za-z0-9]{6})");
 
     public static String colorize(String text) {
 
@@ -32,11 +32,18 @@ public class Hex {
         }
 
         while (r.find()) {
-            ChatColor color = ChatColor.of(Color.decode(r.group(1)));
-            text = r.replaceAll(color + "");
+            text = r.replaceAll(asChatColor(Color.decode(r.group(1))));
         }
 
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+    
+    private static String asChatColor(Color color) {
+        String result = "§x";
+		for(char c : String.format("%08x", color.getRGB()).substring(2).toCharArray()) {
+			result += '§' + c;
+		}
+       return result;
     }
 
     private static String rgbGradient(String str, Color from, Color to, BeforeType[] types) {
@@ -49,7 +56,7 @@ public class Hex {
         }
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            builder.append(ChatColor.of(new Color((int) Math.round(red[i]), (int) Math.round(green[i]), (int) Math.round(blue[i])))).append(before).append(str.charAt(i));
+            builder.append(asChatColor(new Color((int) Math.round(red[i]), (int) Math.round(green[i]), (int) Math.round(blue[i])))).append(before).append(str.charAt(i));
         }
         return builder.toString();
     }
