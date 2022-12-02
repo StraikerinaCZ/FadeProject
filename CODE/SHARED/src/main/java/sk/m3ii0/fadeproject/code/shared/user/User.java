@@ -119,7 +119,7 @@ public class User {
 
     public boolean hasPermission(String value) {
         if (group.getPermissions().containsKey(value)) {
-            return group.getPermissions().get(value);
+            return group.getPermissions().get(value).isEnabled();
         }
         return false;
     }

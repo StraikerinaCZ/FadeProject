@@ -22,7 +22,7 @@ public class Group {
         Group result = null;
 
         try (
-                PreparedStatement statement = MySQL.getConnection().prepareStatement("SELECT * FROM groups WHERE fuid='" + fuid + "'");
+                PreparedStatement statement = MySQL.getConnection().prepareStatement("SELECT * FROM groups WHERE fuid='" + fuid.get() + "';");
                 ResultSet set = statement.executeQuery()
         ) {
 
@@ -67,7 +67,7 @@ public class Group {
     *
     */
 
-    private final Map<String, Boolean> permissions;
+    private final Map<String, PermissionWorth> permissions;
 
     private final int weight;
     private final String rawName;
@@ -90,42 +90,28 @@ public class Group {
             return;
         }
 
-        for (String rawData : rawPermissions.split(",")) {
-            String dataKey = rawData.split("->")[0];
-            boolean dataValue = Boolean.parseBoolean(rawData.split("->")[1]);
-            if (dataKey.contains("group.")) {
-                String group = dataKey.split("group.")[0];
-                Group var = Group.getByName(group);
-                for (String perm : var.getPermissions().keySet()) {
-                    if (dataValue) {
-                        permissions.put(perm, var.getPermissions().get(perm));
-                    } else {
-                        permissions.put(perm, false);
-                    }
-                }
-            }
-            permissions.put(dataKey, dataValue);
+        for (String data : rawPermissions.split(",")) {
+            String permission = data.split("->")[0];
+            boolean value = Boolean.parseBoolean(data.split("->")[1]);
+            String toParse = "<" + data.split("->")[1].split("<")[1];
+            PermissionWorth worth = PermissionWorth.fromString(toParse, value);
+            permissions.put(permission, worth);
         }
 
     }
 
-    public Map<String, Boolean> getPermissions() {
+    public Map<String, PermissionWorth> getPermissions() {
         return permissions;
     }
 
     public String permissionsToString() {
-
         String value = "{";
-
-        for (String key : permissions.keySet()) {
-            boolean var = permissions.get(key);
-            String finalData = key + "->" + var;
-            value += finalData + ",";
+        for (Map.Entry<String, PermissionWorth> entry : permissions.entrySet()) {
+            PermissionWorth worth = entry.getValue();
+            value += entry.getKey() + "->" + worth.isEnabled() + "<time=" + worth.getPermissionTime().getFormatted() + ";world=" + worth.getWorld() + ">,";
         }
-
         value = value.replaceAll(",$", "");
         value += "}";
-
         return value;
     }
 

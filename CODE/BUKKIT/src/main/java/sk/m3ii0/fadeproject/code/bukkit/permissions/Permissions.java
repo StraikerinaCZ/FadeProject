@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import sk.m3ii0.fadeproject.code.bukkit.CodeBukkit;
 import sk.m3ii0.fadeproject.code.shared.permissions.Group;
+import sk.m3ii0.fadeproject.code.shared.permissions.PermissionWorth;
 import sk.m3ii0.fadeproject.code.shared.user.User;
 
 import java.util.Map;
@@ -19,10 +20,11 @@ public class Permissions {
             player.removeAttachment(info.getAttachment());
         }
         if (group != null) {
-            for (Map.Entry<String, Boolean> var : group.getPermissions().entrySet()) {
-                player.addAttachment(CodeBukkit.getInstance(), var.getKey(), var.getValue());
+            for (Map.Entry<String, PermissionWorth> var : group.getPermissions().entrySet()) {
+                player.addAttachment(CodeBukkit.getInstance(), var.getKey(), var.getValue().isEnabled());
             }
         }
+        player.updateCommands();
     }
 
 }
